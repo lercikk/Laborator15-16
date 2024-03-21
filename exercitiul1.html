@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizarea animației cu un procesor de eveniment</title>
+<style>
+    #container {
+        width: 400px;
+        height: 300px;
+        border: 1px solid black;
+        position: relative;
+    }
+    #ball {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: red;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <div id="ball"></div>
+</div>
+<!-- Joc . Utilizarea procesorului de evenimete.
+Acest cod creează un container HTML cu o minge roșie care se mișcă la stânga și la dreapta pe ecran atunci când utilizatorul apasă săgețile corespunzătoare. Funcția moveBall se asigură că mingea nu iese din container, limitând mișcarea între marginile acestuia. Astfel, optimizăm animația pentru a evita reprezentarea mingii în afara ecranului.
+ -->
+
+<script>
+    // Definirea variabilelor pentru elementele HTML
+    var container = document.getElementById('container');
+    var ball = document.getElementById('ball');
+   
+    // Definirea coordonatelor inițiale ale mingii
+    var xPosition = container.offsetWidth / 2 - ball.offsetWidth / 2;
+   
+    // Setarea coordonatelor inițiale ale mingii
+    ball.style.left = xPosition + 'px';
+   
+    // Definirea funcției pentru procesarea evenimentelor de apăsare a tastelor săgeți
+    function handleKeyPress(event) {
+        // Verificarea tastelor apăsate și mutarea mingii corespunzător
+        switch (event.key) {
+            case 'ArrowLeft':
+                moveBall(-10);
+                break;
+            case 'ArrowRight':
+                moveBall(10);
+                break;
+            default:
+                break;
+        }  }
+       // Funcție pentru mutarea mingii pe ecran
+    function moveBall(distance) {
+        // Calcularea noii poziții orizontale a mingii
+        var newX = parseInt(ball.style.left) + distance;
+       
+        // Limitarea mișcării mingii între marginile containerului
+        newX = Math.max(0, Math.min(container.offsetWidth - ball.offsetWidth, newX));
+       
+        // Setarea noii poziții orizontale a mingii
+        ball.style.left = newX + 'px';
+    }
+   
+    // Adăugarea unui ascultător de evenimente pentru apăsarea tastelor săgeți
+    document.addEventListener('keydown', handleKeyPress);
+</script>
+</body>
+</html>

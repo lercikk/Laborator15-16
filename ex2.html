@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizarea animației cu un procesor de eveniment (desen interactiv)</title>
+<style>
+    #container {
+        width: 400px;
+        height: 300px;
+        border: 1px solid black;
+        position: relative;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <canvas id="canvas"></canvas>
+</div>
+
+<!-- Optimizarea animației în HTML5. Vom crea un simplu desen interactiv care permite utilizatorului să tragă cu mouse-ul pentru a desena pe ecran.
+Acest cod creează un canvas HTML care permite utilizatorului să deseneze pe ecran atunci când ține apăsat butonul mouse-ului și mișcă cursorul. Funcțiile startDrawing, draw și stopDrawing gestionează începerea, desenarea și oprirea desenului, respectiv. Folosim un procesor de evenimente pentru a reacționa la mișcarea mouse-ului și a desena în consecință, optimizând astfel animația desenului interactiv.
+ -->
+<script>
+    // Definirea variabilelor pentru elementele HTML
+    var container = document.getElementById('container');
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+   
+    // Setarea dimensiunilor canvasului
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+   
+    // Definirea variabilelor pentru poziția inițială și culoarea creionului
+    var drawing = false;
+    var lastX = 0;
+    var lastY = 0;
+    var color = 'black';
+   
+    // Funcția pentru începerea desenului
+    function startDrawing(event) {
+        drawing = true;
+        lastX = event.offsetX;
+        lastY = event.offsetY;
+    }
+   
+    // Funcția pentru desenarea liniilor
+    function draw(event) {
+        if (drawing) {
+            ctx.strokeStyle = color;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+            lastX = event.offsetX;
+            lastY = event.offsetY;
+        }
+    }
+   
+    // Funcția pentru oprirea desenului
+    function stopDrawing() {
+        drawing = false;
+    }
+   
+    // Adăugarea ascultătorilor de evenimente pentru mouse
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+</script>
+</body>
+</html>

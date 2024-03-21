@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joc cu note muzicale folosind canvas</title>
+<style>
+    canvas {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="300"></canvas>
+
+<!-- Utilizarea animației numită "icon-anim" care va face nota să crească, să se rotească și apoi să revină la dimensiunea și poziția inițială.
+În acest scop, vom folosi cheia @keyframes și o clasă CSS pentru notele muzicale.
+ -->
+
+<script>
+    var canvas = document.getElementById("gameCanvas");
+    var ctx = canvas.getContext("2d");
+
+
+    // Variabile pentru bara de prindere și notele muzicale
+    var barWidth = 100;
+    var barHeight = 10;
+    var barX = (canvas.width - barWidth) / 2;
+    var barY = canvas.height - 30;
+    var noteWidth = 20;
+    var noteHeight = 20;
+    var notes = [];
+
+
+    // Inițializare joc
+    function init() {
+        // Ascultă evenimentele pentru tastele săgeți
+        document.addEventListener("keydown", moveBar);
+       
+        // Crează note muzicale la fiecare 1.5 secunde
+        setInterval(createNote, 1500);
+       
+        // Actualizează animația la fiecare 10 milisecunde
+        setInterval(draw, 10);
+    }
+
+
+    // Funcție pentru crearea notei muzicale
+    function createNote() {
+        var x = Math.random() * (canvas.width - noteWidth);
+        var y = 0;
+        var speed = Math.random() * 2 + 1;
+        notes.push({ x: x, y: y, speed: speed });
+    }
+
+
+    // Funcție pentru desenarea elementelor pe canvas
+    function draw() {
+        // Șterge canvas-ul pentru a re-desena elementele
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+        // Desenează bara de prindere
+        ctx.fillStyle = "blue";
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+
+        // Desenează fiecare notă muzicală
+        ctx.fillStyle = "red";
+        for (var i = 0; i < notes.length; i++) {
+            ctx.fillRect(notes[i].x, notes[i].y, noteWidth, noteHeight);
+            notes[i].y += notes[i].speed; // Mișcă nota muzicală în jos
+            // Verifică coliziunea cu bara de prindere
+            if (notes[i].x < barX + barWidth && notes[i].x + noteWidth > barX &&
+                notes[i].y < barY + barHeight && notes[i].y + noteHeight > barY) {
+                notes.splice(i, 1); // Elimină nota muzicală dacă a fost prinsă
+                i--;
+            }
+        }
+    }
+
+
+    // Funcție pentru mișcarea barei de prindere cu tastele săgeți
+    function moveBar(event) {
+        if (event.key === "ArrowLeft" && barX > 0) {
+            barX -= 10;
+        } else if (event.key === "ArrowRight" && barX < canvas.width - barWidth) {
+            barX += 10;
+        }
+    }
+
+
+    // Inițializează jocul
+    init();
+</script>
+</body>
+</html>
